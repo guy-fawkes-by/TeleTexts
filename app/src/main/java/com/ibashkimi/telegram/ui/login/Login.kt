@@ -20,10 +20,11 @@ fun WaitForNumberScreen(onEnter: (String) -> Unit) {
 }
 
 @Composable
-fun WaitForCodeScreen(onEnter: (String) -> Unit) {
+fun WaitForCodeScreen(onEnter: (String) -> Unit, onBack: (() -> Unit)?) {
     AuthorizationScreen(
         title = "Enter code",
-        onEnter = onEnter
+        onEnter = onEnter,
+        onBack = onBack
     )
 }
 
@@ -36,7 +37,7 @@ fun WaitForPasswordScreen(onEnter: (String) -> Unit) {
 }
 
 @Composable
-private fun AuthorizationScreen(title: String, message: String? = null, onEnter: (String) -> Unit) {
+private fun AuthorizationScreen(title: String, message: String? = null, onEnter: (String) -> Unit, onBack: (() -> Unit)? = null) {
     val executed = state { false }
     Scaffold(
         topBar = {
@@ -72,6 +73,14 @@ private fun AuthorizationScreen(title: String, message: String? = null, onEnter:
                         onEnter(phoneNumber.value.text)
                         executed.value = true
                     })
+                    if (onBack !== null) {
+                        Button(modifier = Modifier.gravity(Alignment.Start), content = {
+                            Text("Back")
+                        }, onClick = {
+                            onBack()
+                            executed.value = true
+                        })
+                    }
                 }
             }
         }

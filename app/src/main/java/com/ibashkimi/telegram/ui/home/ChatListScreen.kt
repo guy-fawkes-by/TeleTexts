@@ -13,9 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.ibashkimi.telegram.Navigation
 import com.ibashkimi.telegram.R
-import com.ibashkimi.telegram.Screen
 import com.ibashkimi.telegram.data.Repository
 import com.ibashkimi.telegram.data.Response
 import com.ibashkimi.telegram.data.asResponse
@@ -24,8 +22,8 @@ import org.drinkless.td.libcore.telegram.TdApi
 
 @Composable
 fun HomeScreen(repository: Repository, modifier: Modifier = Modifier) {
-    val chats = repository.chats.getChats().asResponse().collectAsState(null, Dispatchers.IO)
-    when (val response = chats.value) {
+    val chats = repository.chats?.getChats(true)?.asResponse()?.collectAsState(null, Dispatchers.IO)
+    when (val response = chats?.value) {
         null -> {
             LoadingChats(modifier)
         }
@@ -55,8 +53,12 @@ private fun ChatsLoaded(
 ) {
     Log.d("HomeScreen", "chat: $chats")
     LazyColumnFor(chats, modifier = modifier.padding(start = 16.dp)) {
-        ClickableChatItem(repository, it) {
-            Navigation.navigateTo(Screen.Chat(it))
+        ClickableChatItem(Repository, it) {
+            if (Repository.chats?.isChatMonitored(it.id) == true) {
+                Repository.chats?.chatsToMonitor?.remove(it.id)
+            } else {
+                Repository.chats?.chatsToMonitor?.add(it.id)
+            }
         }
     }
 }

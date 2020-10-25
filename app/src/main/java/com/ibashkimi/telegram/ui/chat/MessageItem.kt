@@ -17,7 +17,7 @@ fun AudioMessage(message: TdApi.MessageAudio, modifier: Modifier = Modifier) {
 
 @Composable
 fun VideoMessage(message: TdApi.MessageVideo, modifier: Modifier = Modifier) {
-    Text(text = "video", modifier = modifier)
+    Text(text = message.caption.text, modifier = modifier)
 }
 
 @Composable
@@ -34,3 +34,9 @@ fun AnimationMessage(message: TdApi.MessageAnimation, modifier: Modifier = Modif
 fun CallMessage(message: TdApi.MessageCall, modifier: Modifier = Modifier) {
     Text(text = "Call", modifier = modifier)
 }
+
+@Composable
+fun PhotoMessage(message: TdApi.MessagePhoto, modifier: Modifier = Modifier) {
+    Text(text = message.caption.text, modifier = modifier)
+}
+

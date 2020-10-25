@@ -1,22 +1,18 @@
 package com.ibashkimi.telegram.ui.home
 
 import android.text.format.DateUtils
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawOpacity
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ibashkimi.telegram.R
@@ -37,76 +33,76 @@ fun ChatTitle(text: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun ChatSummary(chat: TdApi.Chat, modifier: Modifier = Modifier) {
-    chat.lastMessage?.content?.let {
-        when (it.constructor) {
-            TdApi.MessageText.CONSTRUCTOR -> BasicChatSummary(
-                text = (it as TdApi.MessageText).text.text,
-                modifier = modifier
-            )
-            TdApi.MessageVideo.CONSTRUCTOR -> HighlightedChatSummary("Video", modifier = modifier)
-            TdApi.MessageCall.CONSTRUCTOR -> HighlightedChatSummary("Call", modifier = modifier)
-            TdApi.MessageAudio.CONSTRUCTOR -> {
-                val message = it as TdApi.MessageAudio
-                Row(modifier = modifier) {
-                    Image(
-                        asset = Icons.Default.Mic,
-                        alignment = Alignment.Center,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                    )
-                    Text(
-                        text = message.audio.duration.toTime(),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-            TdApi.MessageSticker.CONSTRUCTOR -> BasicChatSummary(
-                (it as TdApi.MessageSticker).sticker.emoji + " Sticker",
-                modifier = modifier
-            )
-            TdApi.MessageAnimation.CONSTRUCTOR -> HighlightedChatSummary("GIF", modifier = modifier)
-            TdApi.MessageLocation.CONSTRUCTOR -> HighlightedChatSummary(
-                "Location",
-                modifier = modifier
-            )
-            TdApi.MessageVoiceNote.CONSTRUCTOR -> {
-                val message = it as TdApi.MessageVoiceNote
-                Row(modifier = modifier) {
-                    Image(
-                        asset = Icons.Default.Mic,
-                        alignment = Alignment.Center,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                    )
-                    Text(
-                        text = message.voiceNote.duration.toTime(),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-            TdApi.MessageVideoNote.CONSTRUCTOR -> {
-                val message = it as TdApi.MessageVideoNote
-                Row(modifier = modifier) {
-                    Image(
-                        asset = Icons.Default.Videocam,
-                        alignment = Alignment.Center,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                    )
-                    Text(
-                        text = message.videoNote.duration.toTime(),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-            TdApi.MessageContactRegistered.CONSTRUCTOR -> HighlightedChatSummary(
-                "Joined Telegram!",
-                modifier = modifier
-            )
-            TdApi.MessageChatDeleteMember.CONSTRUCTOR -> HighlightedChatSummary(
-                "${(it as TdApi.MessageChatDeleteMember).userId} left the chat",
-                modifier = modifier
-            )
-            else -> it::class.java.simpleName
-        }
-    }
+//    chat.lastMessage?.content?.let {
+//        when (it.constructor) {
+//            TdApi.MessageText.CONSTRUCTOR -> BasicChatSummary(
+//                text = (it as TdApi.MessageText).text.text,
+//                modifier = modifier
+//            )
+//            TdApi.MessageVideo.CONSTRUCTOR -> HighlightedChatSummary("Video", modifier = modifier)
+//            TdApi.MessageCall.CONSTRUCTOR -> HighlightedChatSummary("Call", modifier = modifier)
+//            TdApi.MessageAudio.CONSTRUCTOR -> {
+//                val message = it as TdApi.MessageAudio
+//                Row(modifier = modifier) {
+//                    Image(
+//                        asset = Icons.Default.Mic,
+//                        alignment = Alignment.Center,
+//                        colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+//                    )
+//                    Text(
+//                        text = message.audio.duration.toTime(),
+//                        modifier = Modifier.padding(start = 8.dp)
+//                    )
+//                }
+//            }
+//            TdApi.MessageSticker.CONSTRUCTOR -> BasicChatSummary(
+//                (it as TdApi.MessageSticker).sticker.emoji + " Sticker",
+//                modifier = modifier
+//            )
+//            TdApi.MessageAnimation.CONSTRUCTOR -> HighlightedChatSummary("GIF", modifier = modifier)
+//            TdApi.MessageLocation.CONSTRUCTOR -> HighlightedChatSummary(
+//                "Location",
+//                modifier = modifier
+//            )
+//            TdApi.MessageVoiceNote.CONSTRUCTOR -> {
+//                val message = it as TdApi.MessageVoiceNote
+//                Row(modifier = modifier) {
+//                    Image(
+//                        asset = Icons.Default.Mic,
+//                        alignment = Alignment.Center,
+//                        colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+//                    )
+//                    Text(
+//                        text = message.voiceNote.duration.toTime(),
+//                        modifier = Modifier.padding(start = 8.dp)
+//                    )
+//                }
+//            }
+//            TdApi.MessageVideoNote.CONSTRUCTOR -> {
+//                val message = it as TdApi.MessageVideoNote
+//                Row(modifier = modifier) {
+//                    Image(
+//                        asset = Icons.Default.Videocam,
+//                        alignment = Alignment.Center,
+//                        colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+//                    )
+//                    Text(
+//                        text = message.videoNote.duration.toTime(),
+//                        modifier = Modifier.padding(start = 8.dp)
+//                    )
+//                }
+//            }
+//            TdApi.MessageContactRegistered.CONSTRUCTOR -> HighlightedChatSummary(
+//                "Joined Telegram!",
+//                modifier = modifier
+//            )
+//            TdApi.MessageChatDeleteMember.CONSTRUCTOR -> HighlightedChatSummary(
+//                "${(it as TdApi.MessageChatDeleteMember).userId} left the chat",
+//                modifier = modifier
+//            )
+//            else -> it::class.java.simpleName
+//        }
+//    }
 }
 
 @Composable
@@ -146,21 +142,20 @@ fun ChatItem(repository: Repository, chat: TdApi.Chat, modifier: Modifier = Modi
         val imageModifier = Modifier.size(48.dp).clip(shape = CircleShape)
 
         val chatPhoto =
-            repository.chats.chatImage(chat)
-                .collectAsState(chat.photo?.small?.local?.path, Dispatchers.IO)
+            repository.chats?.chatImage(chat)
+                ?.collectAsState(chat.photo?.small?.local?.path, Dispatchers.IO)
         NetworkImage(
-            url = chatPhoto.value,
+            url = chatPhoto?.value,
             modifier = imageModifier,
             placeHolderRes = R.drawable.ic_person
         )
+        val chatIsMonitored = Repository.chats?.isChatMonitored(chat.id)
         Column(modifier = modifier.fillMaxWidth()) {
             Row(verticalGravity = Alignment.CenterVertically) {
-                ChatTitle(chat.title, modifier = Modifier.weight(1.0f))
-                chat.lastMessage?.date?.toLong()?.let { it * 1000 }?.let {
-                    ChatTime(it.toRelativeTimeSpan(), modifier = Modifier.drawOpacity(0.6f))
-                }
+                ChatTitle(chat.title, modifier = Modifier.weight(1.0f).background(
+                   if (chatIsMonitored == true) Color.LightGray else Color.White
+                ))
             }
-            ChatSummary(chat, modifier = Modifier.drawOpacity(0.6f))
         }
     }
 }
