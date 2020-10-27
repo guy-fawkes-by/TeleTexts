@@ -2,13 +2,14 @@ package com.ibashkimi.telegram.ui_activities
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.appcompat.app.AppCompatActivity
 import com.ibashkimi.telegram.R
 
 class SettingsActivity : AppCompatActivity() {
@@ -60,6 +61,9 @@ class SettingsActivity : AppCompatActivity() {
             return
         }
         setSharedPreferences(R.string.target_phone_number, newPhone)
+        val inputManager: InputMethodManager =
+            this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.toggleSoftInput(0, 0)
         Toast.makeText(this, "New phone set", Toast.LENGTH_SHORT)
     }
 
@@ -76,8 +80,11 @@ class SettingsActivity : AppCompatActivity() {
     fun setSharedPreferences(key: Int, value: String) {
         val keyString = this.getString(key)
 
-        val sharedPref = this.getSharedPreferences(this.getString(R.string.settings), Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
+        val sharedPref = this.getSharedPreferences(
+            this.getString(R.string.settings),
+            Context.MODE_PRIVATE
+        ) ?: return
+        with(sharedPref.edit()) {
             putString(keyString, value)
             apply()
         }
