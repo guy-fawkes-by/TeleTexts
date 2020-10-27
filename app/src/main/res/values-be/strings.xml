@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TeleTexts</string>
+    <string name="enter">Далей</string>
+    <string name="loading">Грузім...</string>
+    <string name="chats_error">Не магу загрузіть дыялогі :\'(</string>
+    <string name="settings_menu_caption">Налады</string>
+    <string name="phone_number_to_send_sms_to_label">Тэлефон для СМС</string>
+    <string name="active_toggle_label">Адпраўляць СМС навіны?</string>
+    <string name="yes_label">ТАК</string>
+    <string name="no_label">НЕ</string>
+</resources>
