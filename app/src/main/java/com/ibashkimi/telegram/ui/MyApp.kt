@@ -24,6 +24,7 @@ import com.ibashkimi.telegram.ui.home.HomeScreen
 import com.ibashkimi.telegram.ui.login.WaitForCodeScreen
 import com.ibashkimi.telegram.ui.login.WaitForNumberScreen
 import com.ibashkimi.telegram.ui.login.WaitForPasswordScreen
+import com.ibashkimi.telegram.ui.login.WaitingForClientToInitialize
 
 @Composable
 fun MyApp(rootActivity: MainActivity, repository: Repository) {
@@ -35,9 +36,11 @@ fun MyApp(rootActivity: MainActivity, repository: Repository) {
         android.util.Log.d("MyApp", "auth state: ${authState!!.value}")
         when (authState!!.value) {
             Authentication.UNKNOWN -> {
-                Text(
-                    rootActivity.getString(R.string.waiting_for_client_initialization),
-                    modifier = Modifier.fillMaxWidth() + Modifier.wrapContentSize(Alignment.Center)
+                WaitingForClientToInitialize(
+                    "Если грузимся слишком долго, то, пожалуйста, разрешите приложению TeleTexts в настройках Хранилище (STORAGE). Это косяк, мы работаем над исправлением :'( ",
+                    {
+                        repository.client?.logOut()
+                    }
                 )
             }
             Authentication.UNAUTHENTICATED -> {
