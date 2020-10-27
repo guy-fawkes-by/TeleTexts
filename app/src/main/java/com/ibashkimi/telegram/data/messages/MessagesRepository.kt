@@ -25,11 +25,11 @@ class MessagesRepository(private val client: TelegramClient) {
         awaitClose { }
     }
 
-    fun getMessage(chatId: Long, messageId: Long): Flow<TdApi.Message> = callbackFlow {
+    fun getMessage(chatId: Long, messageId: Long): Flow<TdApi.MessageText> = callbackFlow {
         client.client.send(TdApi.GetMessage(chatId, messageId)) {
             when (it.constructor) {
                 TdApi.Message.CONSTRUCTOR -> {
-                    offer(it as TdApi.Message)
+                    offer(it as TdApi.MessageText)
                 }
                 TdApi.Error.CONSTRUCTOR -> {
                     error("Something went wrong")

@@ -32,8 +32,8 @@ import org.drinkless.td.libcore.telegram.TdApi
 @Composable
 fun ChatScreen(repository: Repository, chat: TdApi.Chat, modifier: Modifier = Modifier) {
     val history =
-        repository.messages.getMessages(chat.id).asResponse().collectAsState(initial = null)
-    when (val response = history.value) {
+        repository.messages?.getMessages(chat.id)?.asResponse()?.collectAsState(initial = null)
+    when (val response = history?.value) {
         null -> {
             ChatLoading(modifier)
         }
@@ -45,7 +45,7 @@ fun ChatScreen(repository: Repository, chat: TdApi.Chat, modifier: Modifier = Mo
                     modifier = Modifier.fillMaxWidth()
                 )
                 MessageInput(modifier = Modifier.gravity(Alignment.BottomCenter)) {
-                    repository.messages.sendMessage()
+                    repository.messages?.sendMessage()
                 }
             }
         }
@@ -90,10 +90,10 @@ private fun MessageItem(
         modifier = Modifier.clickable(onClick = {}) + modifier.fillMaxWidth()
     ) {
         val userPhoto =
-            repository.users.getUser(message.senderUserId).collectAsState(null, Dispatchers.IO)
+            repository.users?.getUser(message.senderUserId)?.collectAsState(null, Dispatchers.IO)
         val imageModifier = Modifier.padding(16.dp).size(40.dp).clip(shape = CircleShape)
         NetworkImage(
-            url = userPhoto.value?.profilePhoto?.small?.local?.path,
+            url = userPhoto?.value?.profilePhoto?.small?.local?.path,
             modifier = imageModifier,
             placeHolderRes = null
         )
@@ -109,6 +109,7 @@ private fun MessageItem(
                 is TdApi.MessageAudio -> AudioMessage(content, messageModifier)
                 is TdApi.MessageSticker -> StickerMessage(content, messageModifier)
                 is TdApi.MessageAnimation -> AnimationMessage(content, messageModifier)
+                is TdApi.MessagePhoto -> PhotoMessage(content, messageModifier)
                 else -> Text(message::class.java.simpleName)
             }
         }

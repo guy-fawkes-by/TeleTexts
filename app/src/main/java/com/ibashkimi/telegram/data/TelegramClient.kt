@@ -1,8 +1,13 @@
 package com.ibashkimi.telegram.data
 
+import android.Manifest
 import android.app.Application
+import android.content.pm.PackageManager
 import android.os.Build
+import android.telephony.SmsManager
 import android.util.Log
+import androidx.core.content.ContextCompat
+import com.ibashkimi.telegram.NewTelegramMessageListener
 import com.ibashkimi.telegram.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +30,7 @@ import java.util.*
  * </resources>
  */
 @ExperimentalCoroutinesApi
-class TelegramClient(val application: Application) : Client.ResultHandler {
+class TelegramClient(val application: Application, val newTelegramMessageListener : NewTelegramMessageListener) : Client.ResultHandler {
 
     private val TAG = TelegramClient::class.java.simpleName
 
@@ -42,6 +47,10 @@ class TelegramClient(val application: Application) : Client.ResultHandler {
         client.close()
     }
 
+    fun logOut() {
+        client.send(TdApi.LogOut(), this)
+    }
+
     private val requestScope = CoroutineScope(Dispatchers.IO)
 
     private fun setAuth(auth: Authentication) {
@@ -55,9 +64,14 @@ class TelegramClient(val application: Application) : Client.ResultHandler {
                 Log.d(TAG, "UpdateAuthorizationState")
                 onAuthorizationStateUpdated((data as TdApi.UpdateAuthorizationState).authorizationState)
             }
-            TdApi.UpdateOption.CONSTRUCTOR -> {
 
+            TdApi.UpdateNewMessage.CONSTRUCTOR -> {
+                val message = (data as TdApi.UpdateNewMessage).message
+                this.newTelegramMessageListener.onNewMessage(message)
             }
+//            TdApi.UpdateOption.CONSTRUCTOR -> {
+//
+//            }
 
             else -> Log.d(TAG, "Unhandled onResult call with data: $data.")
         }

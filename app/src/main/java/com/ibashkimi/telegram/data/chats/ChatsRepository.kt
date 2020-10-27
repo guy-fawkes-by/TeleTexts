@@ -9,8 +9,10 @@ import org.drinkless.td.libcore.telegram.TdApi
 @ExperimentalCoroutinesApi
 class ChatsRepository(private val client: TelegramClient) {
 
+    public var chatsToMonitor: ArrayList<Long> = ArrayList()
+
     private fun getChatIds(): Flow<LongArray> = callbackFlow {
-        client.client.send(TdApi.GetChats(TdApi.ChatListMain(), Long.MAX_VALUE, 0, 50)) {
+        client.client.send(TdApi.GetChats(TdApi.ChatListMain(), Long.MAX_VALUE, 0, 100)) {
             when (it.constructor) {
                 TdApi.Chats.CONSTRUCTOR -> {
                     offer((it as TdApi.Chats).chatIds)
@@ -22,16 +24,22 @@ class ChatsRepository(private val client: TelegramClient) {
                     error("")
                 }
             }
-            //close()
+            close()
         }
         awaitClose { }
     }
 
-    fun getChats(): Flow<List<TdApi.Chat>> = getChatIds()
+    fun getChats(notMutedOnly: Boolean = false): Flow<List<TdApi.Chat>> = getChatIds()
         .map { ids -> ids.map { getChat(it) } }
         .flatMapLatest { chatsFlow ->
             combine(chatsFlow) { chats ->
-                chats.toList()
+                if (notMutedOnly) {
+                    chats.toList().filter { chat ->
+                        chat.notificationSettings.muteFor == 0
+                    }
+                } else {
+                    chats.toList()
+                }
             }
         }
 
@@ -39,7 +47,7 @@ class ChatsRepository(private val client: TelegramClient) {
         client.client.send(TdApi.GetChat(chatId)) {
             when (it.constructor) {
                 TdApi.Chat.CONSTRUCTOR -> {
-                    offer(it as TdApi.Chat)
+                    offer((it as TdApi.Chat))
                 }
                 TdApi.Error.CONSTRUCTOR -> {
                     error("Something went wrong")
@@ -51,6 +59,10 @@ class ChatsRepository(private val client: TelegramClient) {
             //close()
         }
         awaitClose { }
+    }
+
+    fun isChatMonitored(chatId: Long): Boolean {
+        return chatId in chatsToMonitor
     }
 
     fun chatImage(chat: TdApi.Chat): Flow<String?> =
