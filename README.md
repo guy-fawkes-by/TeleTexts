@@ -16,11 +16,24 @@ To try out this app, you need to:
 ```
 
 This app is **work in progress**. Features implemented so far:
-- [x] Login
-- [x] Show chat list
-- [ ] Show chat messages
-- [ ] Send messages
-- [ ] ...
+- loading chats list 
+- listening to updates
+- sending new messages from selected chats via SMS
+- pause|resume sending updates remotely by sending keywords SMS messages
+- set target phone number & activate|pause sending updates from SettingsActivity
+
+**TODO:**
+- fix STORAGE permission bug!!!!
+- rewrite Telegram sign in to Fragments
+
+
+**KNOWN BUGS**
+- after you `install -> start -> setup -> use -> close app`, on the second start the app would just stop on start screen. When you allow STORAGE permissions to the app (in your phone  settings) & restart the app, it will load & work as expected
+- you can't sign out from your telegram account, only delete the app
+- if you misprinted your phone or auth code on sign in step, you have to restart the app
+
+APK & russian instruction is stored [here](https://yadi.sk/d/mXerws5pZSem3w?w=1)
+
 
 ## License
     Copyright (c) 2020 Indrit Bashkimi
