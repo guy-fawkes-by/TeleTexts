@@ -1,6 +1,6 @@
 package com.ibashkimi.telegram
 
-import android.Manifest.permission.READ_SMS
+import android.Manifest.permission.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -27,17 +27,19 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), NewTelegramMessageListener, OnAppBarActionClickListener {
     val SMS_PERMISSION_REQUEST_CODE = 101
+    val STORAGE_PERMISSION_REQUEST_CODE = 1023
+
     val SETTINGS_ACTIVITY_CODE = 12
     val DATE_APP_STARTED = Date()
 
     private var settingsActivityOpened = false
 
-    private fun getPermissionToReadSMS() {
+    private fun getPermission(permissions: Array<String>, requestCode: Int,  message: String) {
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
             Toast.makeText(
                 this,
-                getString(R.string.sms_permissions_request_text),
+                message, //getString(R.string.sms_permissions_request_text),
                 Toast.LENGTH_LONG
             )
                 .show()
@@ -53,35 +55,56 @@ class MainActivity : AppCompatActivity(), NewTelegramMessageListener, OnAppBarAc
             ) {
                 Toast.makeText(
                     this,
-                    "Allow permission to allow the app send & receive SMS",
+                    message,
                     Toast.LENGTH_LONG
                 )
                     .show()
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(READ_SMS), this.SMS_PERMISSION_REQUEST_CODE)
+                requestPermissions(permissions, requestCode)
             }
         }
     }
+
+    fun getPermissionToReadSMS() {
+        getPermission(arrayOf(READ_SMS, SEND_SMS, RECEIVE_SMS), SMS_PERMISSION_REQUEST_CODE, "please allow sending SMS to send you SMS")
+    }
+
+//    fun getStoragePermission() {
+//        getPermission(arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST_CODE, "Storage is needed for Telegram lib to store some auth data")
+//    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == SMS_PERMISSION_REQUEST_CODE) {
-            if (grantResults.size == 1 &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-            ) {
-                Toast.makeText(this, "Cool! Thank you", Toast.LENGTH_SHORT).show()
-            } else {
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+             SMS_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.size == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    Toast.makeText(this, "Cool! Thank you", Toast.LENGTH_SHORT).show()
+                } else {
+                    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+                }
+            }
+            STORAGE_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.size == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    Toast.makeText(this, "Cool! Thank you", Toast.LENGTH_SHORT).show()
+                } else {
+                    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+                }
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getPermissionToReadSMS()
+//        getStoragePermission()
         setContent {
             val newClient = TelegramClient(this.application, this)
 
@@ -91,7 +114,6 @@ class MainActivity : AppCompatActivity(), NewTelegramMessageListener, OnAppBarAc
             Repository.users = UserRepository(newClient)
             MyApp(this, Repository)
         }
-        getPermissionToReadSMS()
     }
 
     fun getSetting(key: Int): String? {
@@ -123,15 +145,15 @@ class MainActivity : AppCompatActivity(), NewTelegramMessageListener, OnAppBarAc
         if (Repository.chats?.isChatMonitored(message.chatId) != true) {
             return
         }
-        if (ContextCompat.checkSelfPermission(application, android.Manifest.permission.SEND_SMS)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            getPermissionToReadSMS()
-        } else {
+//        if (ContextCompat.checkSelfPermission(application, android.Manifest.permission.SEND_SMS)
+//            != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            getPermissionToReadSMS()
+//        } else {
             var text = getTextContent(message)
             val number = getSetting(R.string.target_phone_number)
             SendSMSIntentService.startSMSSending(this, text, number, message.chatId)
-        }
+//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
