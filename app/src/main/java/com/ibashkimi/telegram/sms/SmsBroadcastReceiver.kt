@@ -26,7 +26,7 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val intentExtras = intent?.extras;
         if (intentExtras != null) {
-            val targetPhoneNumber = context?.getString(R.string.target_phone_number)//this.getSharedPreferences(context, R.string.target_phone_number)
+            val targetPhoneNumber = this.getSharedPreferences(context, R.string.target_phone_number)
             val smsBundle = intentExtras.get(SMS_BUNDLE) as Array<Any>
             val format  = intentExtras.getString("format");
             val isVersionM = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ;
