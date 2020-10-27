@@ -1,8 +1,9 @@
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-# Telegram Example
+# TeleTexts
 
-A telegram client for android created using tdlib library and built with [Jetpack Compose](https://developer.android.com/jetpack/compose).
+A telegram helper app for android created using tdlib library and built with [Jetpack Compose](https://developer.android.com/jetpack/compose).
+As a base code for interaction with TdLib I use [https://github.com/indritbashkimi/TelegramExample](https://github.com/indritbashkimi/TelegramExample).  (Forked from it)
 
 To try out this app, you need to: 
 * Install the latest **Canary** of Android Studio
